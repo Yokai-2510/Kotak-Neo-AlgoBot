@@ -6,15 +6,15 @@ strategy_dict = {
     "limit_price" : "0" , # if order type is limit , then put the limit value
     "index" : "NIFTY" , # BANKNIFTY or NIFTY
     "ikey_criteria" : "LTP" , # Possible Values : STRIKE , ATM , ITM , LTP
-    "ikey_criteria_value" : "130" , # only applicable for STRIKE and LTP otherwise 0
+    "ikey_criteria_value" : "2" , # only applicable for STRIKE and LTP otherwise 0
     "AMO" : "False" , # YES  or NO (after market order)
-    "global_loss" : "1" , # Global stop loss - will supersede strategy stop loss
-    "global_profit" : "1" , # Global profit - will supersede strategy profit 
-    "strategy_loss" : "1" , # stop loss at strategy level
-    "strategy_profit" : "1" , # profit/target at strategy level
-    "market_open" : "6:15" , # Time at which the Market Opens
+    "global_loss" : "5" , # Global stop loss - will supersede strategy stop loss
+    "global_profit" : "5" , # Global profit - will supersede strategy profit 
+    "strategy_loss" : "3" , # stop loss at strategy level
+    "strategy_profit" : "3" , # profit/target at strategy level
+    "market_open" : "9:15" , # Time at which the Market Opens
     "market_close" : "15:28" , # Time at which the Market closes
-    "exit_time" : "7:36" , # supersede risk conditions if exit time is met.
+    "exit_time" : "15:29" , # supersede risk conditions if exit time is met.
 }
 
 status_dict = {
