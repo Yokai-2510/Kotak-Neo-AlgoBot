@@ -1,2 +1,2 @@
-# Kotak-Neo-AlgoBot
-Price Ranged Strategy based Automated Trading using Kotak Neo API
+# Trading-Bot---Kotak-Neo
+A Price Action / Range based Trading Strategy based on Kotak Neo API 
