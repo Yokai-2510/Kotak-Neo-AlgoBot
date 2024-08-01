@@ -179,8 +179,8 @@ def place_order(client, status_dict, instrument_key, strategy_dict, order_flag):
         if order_response.get('stat') == 'Ok' and 'nOrdNo' in order_response:
             order_id = order_response['nOrdNo']
             status_dict['entry_order_id'] = order_id 
-            log_message("Debug: Entry Order ID before creating report:", status_dict.get('entry_order_id'))
-            log_message("Debug: Exit Order ID before creating report:", status_dict.get('exit_order_id')) 
+            #log_message("Debug: Entry Order ID before creating report:", status_dict.get('entry_order_id'))
+            #log_message("Debug: Exit Order ID before creating report:", status_dict.get('exit_order_id')) 
             if order_flag == 'ENTRY' :
                 status_dict['entry_success'] = True
                 status_dict['entry_order_id'] = order_id
