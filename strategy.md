@@ -1,4 +1,3 @@
-
 ## Zone Definitions
 
 | **Zone**   | **Condition**                              | **Option Type** |
@@ -18,9 +17,9 @@
 
 ## Exit Conditions
 
-- **Exit Time**
-- **Global Profit**
-- **Global Loss**
-- **Strategy Profit**
-- **Strategy Loss**
-- **Zone Change**
+- **Exit Time** : Exit time specified by the user, default value is market close .
+- **Global Profit** : Global level Profit
+- **Global Loss** : Global level Loss
+- **Strategy Profit** : Strategy level profit
+- **Strategy Loss** : Strategy level loss
+- **Zone Change** : If zone change detected from the time when the order was placed 
