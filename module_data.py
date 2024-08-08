@@ -25,18 +25,19 @@ def fetch_indicator(index):
     data = data[data.index.date != today]
     last_5_days = data.tail(5)
 
-    return {
+    return  {
         'high': last_5_days['High'].max(),
         'low': last_5_days['Low'].min(),
         'max_close': last_5_days['Close'].max(),
         'min_close': last_5_days['Close'].min()
     }
 
+
 def fetch_spot_yf(index):
     ticker = yf.Ticker("^NSEI" if index == "NIFTY" else "^NSEBANK")
     data = ticker.history(period="1d")
     data = data.iloc[-1]['Close']
-    #log_message(f"data yf last close for {index}", data)
+    log_message(f"data yf last close for {index}", data)
     return data
 
 def fetch_ikeys(client, index):
@@ -146,13 +147,13 @@ def setup_websocket(client):
         process_websocket_message(message)
 
     def on_error(error_message):
-        print("Error:", error_message)
+        log_message("Error:", error_message)
 
     def on_open(message):
-        print('[OnOpen]:', message)
+        log_message('[OnOpen]:', message)
 
     def on_close(message):
-        print('[OnClose]:', message)
+        log_message('[OnClose]:', message)
 
     client.on_message = on_message
     client.on_error = on_error
