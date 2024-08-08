@@ -1,45 +1,27 @@
 
 strategy_dict = {
 
+    # User Configuration
+    "index" : "NIFTY" , # BANKNIFTY or NIFTY
+    'zone_change_delay': 10,  # Delay in seconds between zone changes before order placement
+    "market_open" : "00:15" , # Time at which the Market Opens
+    "market_close" : "15:29" , # Time at which the Market closes .
+
+    # Entry 
     "quantity" : '2', # Enter the Quantity ( in lots)
     "order_type" : "MKT" , # L for LIMIT and MKT for MARKET
     "limit_price" : "0" , # if order type is limit , then put the limit value
-    "index" : "NIFTY" , # BANKNIFTY or NIFTY
     "ikey_criteria" : "LTP" , # Possible Values : STRIKE , ATM , ITM , LTP
-    "ikey_criteria_value" : "2" , # only applicable for STRIKE and LTP otherwise 0
+    "ikey_criteria_value" : "13" , # only applicable for STRIKE and LTP otherwise 0
     "AMO" : "False" , # YES  or NO (after market order)
-    "global_loss" : "5" , # Global stop loss - will supersede strategy stop loss
-    "global_profit" : "5" , # Global profit - will supersede strategy profit 
-    "strategy_loss" : "3" , # stop loss at strategy level
-    "strategy_profit" : "3" , # profit/target at strategy level
-    "market_open" : "9:15" , # Time at which the Market Opens
-    "market_close" : "15:28" , # Time at which the Market closes
-    "exit_time" : "15:29" , # supersede risk conditions if exit time is met.
+    
+    # Exit
+    "global_loss" : "20" , # Global stop loss - will supersede strategy stop loss
+    "global_profit" : "20" , # Global profit - will supersede strategy profit 
+    "strategy_loss" : "10" , # stop loss at strategy level
+    "strategy_profit" : "10" , # profit/target at strategy level
+    "exit_time" : "15:29"  # Open Positions will brute force exit at this time (supersedes risk conditions)
+    
 }
 
-status_dict = {
-    
-    'zone_index': "",  # Index of the current trading zone
-    'option_type': "",  # Type of the option (e.g., call, put)
-    'order_completion': "",  # Status of order completion
-    'order_ikey': "",  # Instrument key for entry order 
-    'order_status' : "" , # Current status of the order / strategy
-    'order_strike': "",  # Strike price at entry order placement
-    'mtm' : ' ',    # MTM of each order that has been squared off
-    'real_quantity' : '' , # Total Quanity , lot size x  number of lots
-    'current_ltp' : '' , # shows the current ltp of the selected instrument at various phases of the order
-    
-    'entry_transaction': "",  # Type of entry transaction (buy or sell)
-    'entry_success': "",  # Status of entry order success
-    'entry_ltp': "",  # Last traded price at entry order         
-    'entry_time': "",  # Time at entry order placement
-    'entry_spot': "",  # Spot price at entry order placement
-    
-    'exit_transaction': "",  # Type of exit transaction (buy or sell) Compliment of Entry 
-    'exit_success': "",  # Status of exit order success
-    'exit_criteria': "",  # Criteria for exit order
-    'exit_ltp': "",  # Last traded price at exit
-    'exit_time': "",  # Time of exit order
-    'exit_spot': "",  # Spot price at exit order placement
-}
 
