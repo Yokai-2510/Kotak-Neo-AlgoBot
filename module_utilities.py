@@ -5,19 +5,18 @@ from datetime import datetime
 import logging
 import pandas as pd
 import time 
+
+status_dict= {}
 spot_price = None
 current_zone = None
-
-
-# Define the log file path as 'logfile.txt' in the current directory
 LOG_FILE_PATH = os.path.join(os.getcwd(), 'logfile.txt')
-
-# Configure logging
 logging.basicConfig(filename=LOG_FILE_PATH, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 def log_message(*args):
     message = ' '.join(str(arg) for arg in args)
     logging.info(message)
+
 
 def clear_log():
     try:
@@ -64,7 +63,7 @@ def read_option_chain(file_path='option_chain.csv', max_retries=20, delay=0.05, 
                 log_message(f"All {max_retries+1} attempts failed. Using last fetched data: {option_chain_df}")
     return option_chain_df
 
-def create_report(status_dict, zone_index):
+def create_report(order_info , zone_index):
     report_dir = 'reports'
     
     if not os.path.exists(report_dir):
@@ -87,7 +86,7 @@ def create_report(status_dict, zone_index):
 
     try:
         with open(report_path, 'w') as report_file:
-            for key, value in status_dict.items():
+            for key, value in order_info.items():
                 if callable(value):
                     value = str(value())
                 elif isinstance(value, (datetime, np.integer, np.floating, np.ndarray)):
@@ -97,7 +96,7 @@ def create_report(status_dict, zone_index):
     except Exception as e:
         log_message(f"Error while creating report: {e}")
         log_message("Status dict contents:")
-        for key, value in status_dict.items():
+        for key, value in order_info.items():
             log_message(f"{key}: {type(value)} - {value}")
 
 def calculate_mtm(status_dict):
@@ -115,12 +114,23 @@ def calculate_mtm(status_dict):
     status_dict['mtm'] = mtm
     return mtm
 
-def display_info(spot_price, current_zone):
+def display_info(status_dict , indicator_data):
     os.system('cls' if os.name == 'nt' else 'clear')  # Clear the console
-    print(f"Current Spot Price: {spot_price}")
-    print(f"Current Zone: {current_zone}")
+
     print("\nRecent Log Messages:")
     print(read_log())
+    
+    print(f"Market Status : {status_dict['market_status']}")
+    print(f"Current Spot Price: {status_dict['current_spot_price']}")
+    
+    print(f"Current Zone: {status_dict['current_zone']}")
+    print(f"Last Zone: {status_dict['last_zone']}")
+
+    print(f"Any order / position active : {status_dict['order_active']}")
+    print(f"Current ltp of active position: {status_dict['current_ltp']}")
+
+    print(f"Indicator Data: {indicator_data}\n")
+
 
 if __name__ == "__main__": 
     # Test functions
