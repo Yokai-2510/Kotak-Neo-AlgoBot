@@ -1,17 +1,8 @@
 # Trading-Bot---Kotak-Neo
 A Price Action / Range based algo trading bot using Kotak Neo API 
 
-
-
-Add you own credentials in the credentials file in this format :
-
-# credentials
-consumer_key = ''
-consumer_secret = ''
-mobile = ''
-mpin = ''
-login_password = ''
-
+## Strategy Dict 
+Users can configure the strategy dict inside the config file 
 
 ## Zone Definitions
 
@@ -27,7 +18,8 @@ login_password = ''
 
 - **Market Hours** : Current Time should be between Market Hours.
 - **Zone Change Detection:** A new order will be placed only when a zone change is detected.
-
+- **New Order Delay:**  A delay specified by the user in the strategy dict will be implemented for a new zone.
+  
 **NOTE** : If the zone is starting from Zone 3, an order for Zone 3 will not be placed. Once a zone change is detected , only then ,  a new order will be placed for the new zone.
 
 ## Exit Conditions
