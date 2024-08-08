@@ -1,7 +1,9 @@
 # Trading-Bot---Kotak-Neo
-A Price Action / Range based Trading Strategy based on Kotak Neo API 
+A Price Action / Range based algo trading bot using Kotak Neo API 
 
-Add you own credentials file in this format :
+
+
+Add you own credentials in the credentials file in this format :
 
 # credentials
 consumer_key = ''
