@@ -48,6 +48,8 @@ from config import strategy_dict
 client = None    
 option_type = None
 zone_index = None
+indicator = {}
+status_dict = {}
 
 
 def detect_zone(spot_price, indicator):
@@ -399,5 +401,5 @@ def execute_order(zone_index,option_type,indicator,strategy_dict,client,status_d
     #------------------------------------------------------------------------------------------------------
 
 
-# if __name__ == "__main__":
-#     execute_order()
+if __name__ == "__main__":
+    execute_order(zone_index,option_type,indicator,strategy_dict,client,status_dict)
