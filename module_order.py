@@ -271,7 +271,7 @@ def place_order(client, order_info, instrument_key, strategy_dict, order_flag):
             tag = ''
         )
 
-        #log_message("Order response:", order_response)
+        log_message("Order response:", order_response)
         return update_order_details(client ,order_response, order_flag, strategy_dict, order_info)
     
     except Exception as e:
@@ -399,5 +399,5 @@ def execute_order(zone_index,option_type,indicator,strategy_dict,client,status_d
     #------------------------------------------------------------------------------------------------------
 
 
-if __name__ == "__main__":
-    execute_order()
+# if __name__ == "__main__":
+#     execute_order()
