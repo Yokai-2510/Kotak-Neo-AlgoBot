@@ -99,19 +99,15 @@ def create_report(order_info , zone_index):
         for key, value in order_info.items():
             log_message(f"{key}: {type(value)} - {value}")
 
-def calculate_mtm(status_dict):
-    transaction_type = status_dict['entry_transaction_type']
-    quantity = float(status_dict['real_quantity'])
-    exit_ltp = float(status_dict['exit_ltp'])
-    entry_ltp = float(status_dict['entry_ltp'])
+def calculate_mtm(order_info, exit_ltp):
+    transaction_type = order_info['entry_transaction_type']
+    quantity = float(order_info['real_quantity'])
+    entry_ltp = float(order_info['entry_ltp'])
 
     if transaction_type == 'B':
         mtm = (exit_ltp - entry_ltp) * quantity
     elif transaction_type == 'S':
         mtm = (entry_ltp - exit_ltp) * quantity
-    else:
-        raise ValueError("Invalid transaction type. Must be 'B' or 'S'.")
-    status_dict['mtm'] = mtm
     return mtm
 
 def display_info(status_dict , indicator_data):
@@ -122,15 +118,17 @@ def display_info(status_dict , indicator_data):
     
     print(f"Market Status : {status_dict['market_status']}")
     print(f"Current Spot Price: {status_dict['current_spot_price']}")
-    
+    print(f"Indicator Data: {indicator_data}")
     print(f"Current Zone: {status_dict['current_zone']}")
     print(f"Last Zone: {status_dict['last_zone']}")
-
     print(f"Any order / position active : {status_dict['order_active']}")
-    print(f"Current ltp of active position: {status_dict['current_ltp']}")
+    
+    if status_dict['open_position_1'] is not None :
+        print ("\nOpen Position Details :> " , status_dict['open_position_1'] )
 
-    print(f"Indicator Data: {indicator_data}\n")
-
+    if status_dict['open_position_2'] is not None :
+        print ("\nOpen Position Details :> " , status_dict['open_position_2'])
+    
 
 if __name__ == "__main__": 
     # Test functions
