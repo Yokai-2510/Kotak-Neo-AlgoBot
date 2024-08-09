@@ -303,18 +303,25 @@ def evaluate_exit(order_info , strategy_dict, indicator , status_dict):
     zone_index = order_info['zone_index'] 
     order_info['order_status'] = 'Checking Exit Conditions...'
     instrument_key = order_info['order_ikey']
+    option_type = order_info['option_type']
     
     while True:
 
-        time.sleep(1)
+        time.sleep(0.1)
     
         options_df = read_option_chain()
         spot_price = read_spot_price()
         current_ltp = options_df.loc[options_df['instrument_key'] == instrument_key, 'ltp'].values[0]
-        status_dict['current_ltp'] = current_ltp
-        current_zone = detect_zone(spot_price, indicator)
-
         order_info['current_ltp'] = current_ltp
+        current_zone = detect_zone(spot_price, indicator)
+        order_info['mtm'] = calculate_mtm(order_info , current_ltp)
+
+        if zone_index == 3 and option_type == 'CE' :
+            status_dict['open_position_1'] = order_info 
+        elif zone_index == 3 and option_type == 'PE' :
+            status_dict['open_position_2'] = order_info
+        else :
+            status_dict['open_position_1'] = order_info
 
         if current_ltp >= global_profit:
             order_info['exit_criteria'] = 'global_profit'
@@ -382,21 +389,26 @@ def execute_order(zone_index,option_type,indicator,strategy_dict,client,status_d
             if  place_order(client, order_info, instrument_key, strategy_dict, 'EXIT') is True :
                 order_info['order_status'] = 'Exit order placed, Order Complete ! Report saved'
                 log_message(f" Exit Order for zone : {zone_index} , option type : {option_type} Placed successfully")
-                calculate_mtm(order_info)
                 create_report(order_info, zone_index)
                 status_dict['order_active'] = False
+                status_dict['open_position_1'] = None
+                status_dict['open_position_2'] = None
                 return   
             else:
                 order_info['order_status'] = 'Exit Order could not take place , if order is pending, square off manually'
                 create_report(order_info, zone_index)
                 status_dict['order_active'] = False
                 log_message(f" Exit Order for zone : {zone_index} , option type : {option_type}  failed ! Square off if order pending")
+                status_dict['open_position_1'] = None
+                status_dict['open_position_2'] = None
                 return      
     except :
         order_info['order_status'] =  "unknown_error within exit evaluation , order cancelled"
         create_report(order_info, zone_index)
         status_dict['order_active'] = False
         log_message(f" Exit Order for zone : {zone_index} , option type : {option_type}  failed ! Square off if order pending")
+        status_dict['open_position_1'] = None
+        status_dict['open_position_2'] = None
         return
     #------------------------------------------------------------------------------------------------------
 
