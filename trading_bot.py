@@ -20,8 +20,11 @@ status_dict = {
     'zone_change_time': None,
     'current_spot_price': None,
     'market_status': None ,
-    'current_ltp' : None
+    'current_ltp' : None ,
+    'open_position_1' : None ,
+    'open_position_2' : None , 
 }
+
 client = None
 index = strategy_dict['index']
 indicator = fetch_indicator(index)
@@ -29,7 +32,7 @@ indicator = fetch_indicator(index)
 # Connect with Kotak API and store it in client object
 # ------------------------------------------------------------------------------------------------------
 client = fetch_client()
-log_message(f"Client / Access Token fetched successfully")
+print("Client / Access Token fetched successfully")
 # ------------------------------------------------------------------------------------------------------
 
 
@@ -37,6 +40,7 @@ log_message(f"Client / Access Token fetched successfully")
 # ------------------------------------------------------------------------------------------------------
 websocket_thread = threading.Thread(target=run_websocket, args=(client,))
 websocket_thread.start()
+print("Websocket Connected Successfully")
 time.sleep(5)
 # ------------------------------------------------------------------------------------------------------
 
@@ -54,4 +58,4 @@ if __name__ == "__main__":
     clear_log() 
     while True :
         display_info(status_dict , indicator)
-        time.sleep(2)
+        time.sleep(1.5)
