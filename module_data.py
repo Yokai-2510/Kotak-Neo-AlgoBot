@@ -5,9 +5,9 @@ import requests
 import io
 from config import strategy_dict
 import pandas as pd
-import time
 from datetime import datetime
 from module_utilities import log_message
+from threading import Event
 
 global index 
 index = strategy_dict['index']
@@ -17,6 +17,10 @@ last_valid_spot_price = {'value': None, 'timestamp': None}
 option_chain_df = None
 last_valid_ltps = {}
 client = None
+
+# Global flag to indicate connection status
+connection_active = Event()
+connection_active.set()  # Initially set to True
 
 def fetch_indicator(index):
     ticker_symbol = "^NSEI" if index == "NIFTY" else "^NSEBANK"
@@ -32,12 +36,11 @@ def fetch_indicator(index):
         'min_close': last_5_days['Close'].min()
     }
 
-
 def fetch_spot_yf(index):
     ticker = yf.Ticker("^NSEI" if index == "NIFTY" else "^NSEBANK")
     data = ticker.history(period="1d")
     data = data.iloc[-1]['Close']
-    log_message(f"data yf last close for {index}", data)
+    #log_message(f"data yf last close for {index}", data)
     return data
 
 def fetch_ikeys(client, index):
@@ -79,8 +82,6 @@ def fetch_ikeys(client, index):
 
     df = df[['instrument_key', 'symbol', 'option_type', 'strike_price', 'expiry_date']]
     df = df.reset_index(drop=True)
-    #log_message(f"Number of options in chain after filtering: {len(df)}")
-    #log_message(df)
     return df
 
 def write_csv_with_retry(df, filename, max_retries=15, delay=0.1):
@@ -150,10 +151,14 @@ def setup_websocket(client):
         log_message("Error:", error_message)
 
     def on_open(message):
+        global connection_active
         log_message('[OnOpen]:', message)
+        connection_active.set()  # Set to True when connection opens
 
     def on_close(message):
+        global connection_active
         log_message('[OnClose]:', message)
+        connection_active.clear()  # Set to False when connection closes
 
     client.on_message = on_message
     client.on_error = on_error
@@ -179,13 +184,28 @@ def connect_websocket(client):
         log_message(f"Exception while connecting to socket: {e}")
         return False
 
-def websocket_thread(client, stop_event):
-    connect_websocket(client)
-    while not stop_event.is_set():
-        time.sleep(1)  # Keep the thread alive but allow for interruption
+def reconnect_websocket(client):
+    max_retries = 5
+    retry_delay = 5  # seconds
+
+    for attempt in range(max_retries):
+        try:
+            log_message(f"Attempting to reconnect (attempt {attempt + 1}/{max_retries})...")
+            if connect_websocket(client):
+                log_message("Reconnection successful")
+                return True
+        except Exception as e:
+            log_message(f"Reconnection attempt {attempt + 1} failed: {str(e)}")
+        
+        if attempt < max_retries - 1:
+            log_message(f"Waiting {retry_delay} seconds before next attempt...")
+            time.sleep(retry_delay)
+    
+    log_message("Failed to reconnect after maximum attempts")
+    return False
 
 def run_websocket(client):
-    global option_chain_df, last_valid_ltps
+    global option_chain_df, last_valid_ltps, connection_active
 
     # Fetch indicator data
     indicator = fetch_indicator(index)
@@ -207,10 +227,18 @@ def run_websocket(client):
 
     # Main loop
     while True:
-        time.sleep(1)
+        try:
+            time.sleep(1)
+            if not connection_active.is_set():
+                log_message("WebSocket connection lost. Attempting to reconnect...")
+                if reconnect_websocket(client):
+                    connection_active.set()
+                else:
+                    log_message("Failed to reconnect. Retrying in main loop...")
+        except Exception as e:
+            log_message(f"Error in main loop: {str(e)}")
 
 if __name__ == "__main__":
-
     run_websocket(client)
     fetch_spot_yf(index)
     fetch_indicator(index)
